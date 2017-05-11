@@ -1,0 +1,4 @@
+Authtype Basic
+AuthName "Password Protected Area"
+AuthUserFile /var/www/moodle/warehouse/api/.htpasswd
+Require valid-user

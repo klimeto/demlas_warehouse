@@ -1,0 +1,15 @@
+# Successful cURL request to https://demlas.geof.unizg.hr/geoserver/rest/workspaces/demlas_oi/coveragestores/sg_dof_clipped_3857.tif/external.worldimage
+<coverageStore>
+  <name>sg_dof_clipped_3857.tif</name>
+  <type>WorldImage</type>
+  <enabled>true</enabled>
+  <workspace>
+    <name>demlas_oi</name>
+    <href>https://demlas.geof.unizg.hr/geoserver/rest/workspaces/demlas_oi.xml</href>
+  </workspace>
+  <__default>false</__default>
+  <url>file:/opt/demlas/oi/hvar2015/sg_dof_clipped_3857.tif</url>
+  <coverages>
+    <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="https://demlas.geof.unizg.hr/geoserver/rest/workspaces/demlas_oi/coveragestores/sg_dof_clipped_3857.tif/external/coverages.xml" type="application/xml"/>
+  </coverages>
+</coverageStore>

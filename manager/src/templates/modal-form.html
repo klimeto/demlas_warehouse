@@ -1,0 +1,122 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="headerTitle">{{title}}</h4>
+</div>
+<form name="form.metadataForm" ng-submit="submitForm()" novalidate>
+    <div class="modal-body" style="width:100%; height:100%">
+		
+        <!-- WHAT? -->
+        <div class="form-group">
+            <label><center>WHAT?</center></label>
+            <input id="md_title" type="text" name="name" placeholder="Dataset title ..." class="form-control" ng-model="metadata.title" required>
+            <p ng-show="form.metadataForm.name.$invalid && !form.metadataForm.name.$pristine" class="help-block">You name is required.</p>
+			<br>
+			<textarea id="md_abstract" name="note" placeholder="Notice here ..."  rows="5" class="form-control" ng-model="metadata.abstract" required></textarea>
+			<p ng-show="form.metadataForm.note.$invalid && !form.metadataForm.note.$pristine" class="help-block">Note description would be nice.</p>
+			<br>
+			<input id="md_kw" type="text" name="name" placeholder="Keywords here ..." class="form-control" ng-model="metadata.keywords" >
+        </div>
+
+        <!-- WHO? -->
+        <div class="form-group">
+            <label><center>WHO?</center></label>
+            <input id="md_contact_name" placeholder="Full name here..." type="text" name="username" class="form-control" ng-model="metadata.contact" ng-minlength="3" ng-maxlength="200" required>
+            <p ng-show="form.metadataForm.username.$error.minlength" class="help-block">Username is too short.</p>
+            <p ng-show="form.metadataForm.username.$error.maxlength" class="help-block">Username is too long.</p>
+			<br>
+            <input id="md_contact_email" placeholder="Your email address ..." type="email" name="email" class="form-control" ng-model="metadata.email" required>
+			<p ng-show="form.metadataForm.email.$invalid && !form.metadataForm.email.$pristine" class="help-block">Enter a valid email.</p>
+        </div>
+		
+		<!-- WHERE -->
+		<div class="form-group">
+			<section resizable r-directions="['top', 'right', 'bottom', 'left',]">
+				<label><center>WHERE?</center></label>
+				<openlayers  ng-if="!rendered" ol-center="geolocation" width="100%" height="400px" ></openlayers>
+				<div class="btn btn-success pull-right" ng-click="geolocation.autodiscover=true">Locate me</div>
+				<div>Bounding box:
+					XMIN: {{ geolocation.bounds[0] }},YMIN: {{ geolocation.bounds[1] }}, XMAX: {{ geolocation.bounds[2] }}, YMAX: {{ geolocation.bounds[3] }}
+				</div>
+				<div>Center:
+					LON: {{ geolocation.lon }}, LAT: {{ geolocation.lat }}
+				</div>
+				<div style="display:none;">
+					<label>XMIN</label>
+						<input id="bbox_minx" type="number" class="form-control" step="any" ng-model="geolocation.bounds[0]" />
+					<label>YMIN</label>
+						<input id="bbox_miny" type="number" class="form-control" step="any" ng-model="geolocation.bounds[1]" />
+					<label>XMAX</label>
+						<input id="bbox_maxx" type="number" class="form-control" step="any" ng-model="geolocation.bounds[2]" />
+					<label>YMAX</label>
+						<input id="bbox_maxy" type="number" class="form-control" step="any" ng-model="geolocation.bounds[3]" />
+					<label>Zoom</label><input type="number" class="form-control" step="any" ng-model="geolocation.zoom" />
+				</div>
+				<!--
+				<pre>
+					{{ geolocation | json }}
+				</pre>
+				-->
+			</section>
+		</div>
+		
+		<!-- HOW? -->
+        <div class="form-group">
+            <label><center>HOW?</center></label>
+			<input id="md_url" type="url" class="form-control" step="any" ng-model="metadata.url" />
+			<p ng-show="form.metadataForm.url.$invalid && !form.metadataForm.url.$pristine" class="help-block">Enter a valid URL.</p>
+			<br>
+			<textarea id="md_lineage" name="lineage" placeholder="Data provenance here ..."  rows="5" class="form-control" ng-model="metadata.lineage"></textarea>
+			<!--<p ng-show="form.metadataForm.lineage.$invalid && !form.metadataForm.lineage.$pristine" class="help-block">Describe dataset life cycle ...</p>-->
+        </div>
+		
+		<!-- WHEN? -->
+        <div class="form-group">
+            <label><center>WHEN?</center></label>
+			 <input id="md_date" type="date" class="form-control" ng-model="metadata.date" />
+			 <!-- <input type="date" ng-model="item.dateAsString" value="{{ item.dateAsString }}" pattern="dd/MM/YYYY"/> -->
+        </div>
+		<!-- FURTHER METADATA STUFF -->
+		<div type="info" class="btn btn-warning" ng-model="metadata.more" ng-click="showMoreMetadataDiv = !showMoreMetadataDiv">More metadata</div>
+		<br>
+		<hr>
+		<div class="form-group" ng-show="showMoreMetadataDiv">
+			<div class="form-group">
+				<label><center>ALTERNATIVE TITLE</center></label>
+				<input id="md_alt_title" type="text" class="form-control" ng-model="metadata.alttitle" />
+				<label><center>PUBLICATION DATE</center></label>
+				<input id="md_pub_date" type="date" class="form-control" ng-model="metadata.pubdate" />
+				<label><center>ACCESS AND USE</center></label>
+				<input id="md_access" type="text" class="form-control" ng-model="metadata.accessuse" />
+				<label><center>PUBLIC ACCESS</center></label>
+				<input id="md_public_access" type="text" class="form-control" ng-model="metadata.publicaccess" />
+				<label><center>LANGUAGE</center></label>
+				<select id="md_language" type="text" class="form-control" ng-init="metadata.language = languages[2]" ng-model="metadata.language" ng-options="item.name for item in languages track by item.name"  ></select>
+				<label><center>FORMAT</center></label>
+				<input id="md_format" type="text" class="form-control" ng-model="metadata.format" />
+				<label><center>DATA IDENTIFIER</center></label>
+				<input id="md_data_id" type="text" class="form-control" ng-model="metadata.dataidentifier" />
+				<label><center>METADATA IDENTIFIER</center></label>
+				<input id="md_uuid" type="text" class="form-control" ng-disabled="true" ng-model="metadata.identifier" />
+			</div>
+		</div>
+		
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" ng-disabled="form.metadataForm.$invalid">Save</button>
+		<button class="btn btn-primary" ng-controller="publishToCsw" ng-disabled="form.metadataForm.$invalid" ng-click="publish()">Save & Publish</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</form>
+<style>
+	.modal-dialog {
+		  width: 100%;
+		  height: 100%;
+		  margin: 0;
+		  padding: 0;
+		}
+
+		.modal-content {
+		  height: auto;
+		  min-height: 100%;
+		  border-radius: 0;
+		}
+	</style>

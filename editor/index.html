@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="HandheldFriendly" content="true">
+		<link rel="shortcut icon" href="https://demlas.geof.unizg.hr/theme/image.php/aardvark/theme/1493373374/favicon">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+		<!-- Optional theme -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+		<link rel="stylesheet" href="/warehouse/portal/src/css/portal.css" type="text/css" />
+
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<script src="https://tombatossals.github.io/angular-openlayers-directive/bower_components/openlayers3/build/ol.js"></script>
+		<script src="https://tombatossals.github.io/angular-openlayers-directive/bower_components/angular/angular.min.js"></script>
+		<script src="https://tombatossals.github.io/angular-openlayers-directive/bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+		<script src="https://tombatossals.github.io/angular-openlayers-directive/dist/angular-openlayers-directive.js"></script>
+		<script src="src/angular-local-storage.min.js"></script>
+		<script src="src/app.js"></script>
+		<link rel="stylesheet" href="https://tombatossals.github.io/angular-openlayers-directive/bower_components/openlayers3/build/ol.css" />
+			<!--<script src="app.js"></script>-->
+			
+		<style>
+			form {
+				padding: 10px 10px 10px 10px;
+			}
+		</style>
+	</head>
+<body>
+<div ng-app="demoapp" ng-controller="DemoController" class="container-fluid">
+
+	<form name="metadataForm" novalidate ng-controller="localStorageCtrl">
+
+        <!-- WHAT? -->
+        <div class="form-group" >
+            <label><center>WHAT?</center></label>
+			<select name="theme" id="md_theme" type="text" class="form-control" ng-model="metadata.theme" ng-options="item.code as item.name for item in themes" required><i><option value="" >-- Select Data Theme --</option></i></select>
+			<p style="color:red" class="error" ng-show="metadataForm.theme.$dirty && metadataForm.theme.$invalid">* Data theme selection is required.</p>
+			<br>
+            <input id="md_title" type="text" name="title" placeholder="Dataset title ..." class="form-control" ng-model="metadata.title" required>{{message}}</input>
+            <p style="color:red" class="error" ng-show="metadataForm.title.$dirty && metadataForm.title.$invalid">* Data title is required.</p>
+			<!--
+			<blockquote class="well" ng-show="localStorageTitleValue">
+				<p ng-bind="localStorageTitleValue"></p>
+				<small>{{storageType}} value</small>
+			  </blockquote>
+			 -->
+			<br>
+			<textarea id="md_abstract" name="note" placeholder="Notice here ..."  rows="5" class="form-control" ng-model="metadata.abstract" required></textarea>
+			<p style="color:red" class="error" ng-show="metadataForm.note.$dirty && metadataForm.note.$invalid">* Data note is required.</p>
+			<br>
+			<input id="md_kw" type="text" name="keywords" placeholder="Keywords here ..." class="form-control" ng-model="metadata.keywords" required>
+			<p style="color:red" class="error" ng-show="metadataForm.keywords.$dirty && metadataForm.keywords.$invalid">* At least one keyword is required.</p>
+        </div>
+        <!-- WHO? -->
+        <div class="form-group">
+            <label><center>WHO?</center></label>
+            <input id="md_contact_name" placeholder="Full name here..." type="text" name="username" class="form-control" ng-model="metadata.contact" ng-minlength="3" ng-maxlength="50" required>
+            <p ng-show="metadataForm.username.$error.minlength" class="help-block">Username is too short.</p>
+            <p ng-show="metadataForm.username.$error.maxlength" class="help-block">Username is too long.</p>
+			<p style="color:red" class="error" ng-show="metadataForm.username.$dirty && metadataForm.username.$invalid">* Full name is required.</p>
+			<br>
+            <input id="md_contact_email" placeholder="Your email address ..." type="email" name="email" class="form-control" ng-model="metadata.email" required>
+			<p ng-show="metadataForm.email.$invalid && !metadataForm.email.$pristine" class="help-block">Enter a valid email.</p>
+			<p style="color:red" class="error" ng-show="metadataForm.email.$dirty && metadataForm.email.$invalid">* Email is required.</p>
+        </div>
+		
+		<!-- WHERE -->
+		<div class="form-group">
+			<label><center>WHERE?</center></label>
+			<openlayers ol-center="geolocation" width="100%" height="400px" ></openlayers>
+			<button class="btn btn-success pull-right" ng-click="geolocation.autodiscover=true">Locate me</button>
+			<div>Bounding box:
+				XMIN: {{ geolocation.bounds[0] }},YMIN: {{ geolocation.bounds[1] }}, XMAX: {{ geolocation.bounds[2] }}, YMAX: {{ geolocation.bounds[3] }}
+			</div>
+			<div>Center:
+				LON: {{ geolocation.lon }}, LAT: {{ geolocation.lat }}
+			</div>
+			<div style="display:none;">
+			<label>XMIN</label>
+				<input id="bbox_minx" type="number" class="form-control" step="any" ng-model="geolocation.bounds[0]" required></input>
+			<label>YMIN</label>
+				<input id="bbox_miny" type="number" class="form-control" step="any" ng-model="geolocation.bounds[1]" required></input>
+			<label>XMAX</label>
+				<input id="bbox_maxx" type="number" class="form-control" step="any" ng-model="geolocation.bounds[2]" required></input>
+			<label>YMAX</label>
+				<input id="bbox_maxy" type="number" class="form-control" step="any" ng-model="geolocation.bounds[3]" required></input>
+			<label>Zoom</label><input type="number" class="form-control" step="any" ng-model="geolocation.zoom" />
+			</div>
+			<!--
+			<pre>
+				{{ geolocation | json }}
+			</pre>
+			-->
+		</div>
+		
+		<!-- HOW? -->
+        <div class="form-group">
+            <label><center>HOW?</center></label>
+			<input id="md_url" type="url" name="url" placeholder="Data access URL here ..." class="form-control" step="any" ng-model="metadata.url" required/>
+			<p ng-show="metadataForm.url.$invalid && !metadataForm.url.$pristine" class="help-block">Enter a valid URL.</p>
+			<p style="color:red" class="error" ng-show="metadataForm.url.$dirty && metadataForm.url.$invalid">* Web address to data is required.</p>
+			
+			<br>
+			<textarea id="md_lineage" name="lineage" placeholder="Data provenance here ..."  rows="5" class="form-control" ng-model="metadata.lineage" required></textarea>
+			<p style="color:red" class="error" ng-show="metadataForm.lineage.$dirty && metadataForm.lineage.$invalid">* Data provenance description is required.</p>
+			<!--<p ng-show="metadataForm.lineage.$invalid && !metadataForm.lineage.$pristine" class="help-block">Describe dataset life cycle ...</p>-->
+        </div>
+		
+		<!-- WHEN? -->
+        <div class="form-group">
+            <label><center>WHEN?</center></label>
+			 <input id="md_date" name="date" type="date" class="form-control" ng-model="metadata.date" required/>
+			 <p style="color:red" class="error" ng-show="metadataForm.date.$dirty && metadataForm.date.$invalid">* Date is required.</p>
+        </div>
+		
+		<!-- FURTHER METADATA STUFF -->
+		<button class="btn btn-warning" ng-click="showMoreMetadataDiv = !showMoreMetadataDiv">More metadata</button>
+		<br>
+		<hr>
+		<div class="form-group" ng-show="showMoreMetadataDiv">
+			<div class="form-group">
+				<label><center>ALTERNATIVE TITLE</center></label>
+				<input id="md_alt_title" type="text" class="form-control" ng-model="metadata.alttitle" />
+				<label><center>PUBLICATION DATE</center></label>
+				<input id="md_pub_date" type="date" class="form-control" ng-model="metadata.pubdate" />
+				<label><center>ACCESS AND USE</center></label>
+				<input id="md_access" type="text" class="form-control" ng-model="metadata.accessuse" />
+				<label><center>PUBLIC ACCESS</center></label>
+				<input id="md_public_access" type="text" class="form-control" ng-model="metadata.publicaccess" />
+				<label><center>LANGUAGE</center></label>
+				<select id="md_language" type="text" class="form-control" ng-init="metadata.language = languages[2]" ng-model="metadata.language" ng-options="item.name for item in languages track by item.name"  ></select>
+				<label><center>FORMAT</center></label>
+				<input id="md_format" type="text" class="form-control" ng-model="metadata.format" />
+				<label><center>DATA IDENTIFIER</center></label>
+				<input id="md_data_id" type="text" class="form-control" ng-model="metadata.dataidentifier" />
+				<label><center>METADATA IDENTIFIER</center></label>
+				<input id="md_uuid" type="text" class="form-control" ng-disabled="true" ng-model="metadata.identifier" />
+			</div>
+		</div>
+		
+		<div>
+			<button class="btn btn-primary" ng-disabled="metadataForm.$invalid" ng-click="sendXML()">Save</button>
+			<button class="btn btn-primary" ng-disabled="metadataForm.$invalid" ng-click="sendHarvest()">Save & Publish</button>
+        <!--<button class="btn btn-warning" ng-click="cancel()">Cancel</button>-->
+		<button class="btn btn-info" ng-click="saveXML()">Download</button>
+		</div>
+		
+</form>
+<!--
+<div style="text-align: center;heigh: 2em; bottom: 2em;left: 50%;z-index: 9; background-color:blue; color:red; font-style: italic">Developed by<a href="http://klimeto.com/drupal8" target="_new"><span class="mirrortext" data-text="KLIMETO">KLIMETO</span></a>
+		</div>-->
+
+</div>
+</body>
+</html>
